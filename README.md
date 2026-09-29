@@ -1,4 +1,4 @@
-# 🏛️ Atlas Bank — De CRUD Monolítico a Arquitectura Hexagonal
+# 🏛️ Atlas Bank — From Monolithic CRUD to Hexagonal Architecture
 
 [![Java](https://img.shields.io/badge/Java-21-orange.svg?logo=openjdk)](https://openjdk.org/)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.x-brightgreen.svg?logo=springboot)](https://spring.io/projects/spring-boot)
@@ -6,47 +6,47 @@
 [![Security](https://img.shields.io/badge/Security-Keycloak%20%2F%20OAuth2%20%2F%20JWT-red.svg?logo=redhat)](https://www.keycloak.org/)
 [![Testing](https://img.shields.io/badge/Testing-ArchUnit%20%2F%20JUnit5-lightgrey.svg)]()
 
-> **"No se trata de aprender a hacer endpoints, sino de aprender a diseñar software pensando como un arquitecto."**
+> **"It's not about learning how to make endpoints; it's about learning how to design software with the mindset of a software architect."**
 
 ---
 
-## 📌 Visión del Proyecto
+## 📌 Project Overview
 
-**Atlas Bank** es un sistema bancario backend que comienza como un monolito simple (CRUD con Spring Boot) y evoluciona progresivamente hacia una **arquitectura desacoplada, testeable y mantenible**.
+**Atlas Bank** is a backend banking system that begins as a simple CRUD monolith built with Spring Boot and progressively evolves into a **robust, decoupled, testable, and maintainable professional architecture**.
 
-El desarrollo sigue una premisa fundamental: **primero aparece el dolor en el código, después la solución arquitectónica**. A través de problemas reales de escalabilidad y acoplamiento, se justifica e implementa cada patrón y decisión de diseño.
+The system is developed with a fundamental engineering philosophy: **the pain appears first in the code, followed by the architectural solution**. Every pattern, boundary, and technical decision is justified by solving concrete software design bottlenecks.
 
 ```mermaid
 graph TD
-    subgraph "Adaptadores Primarios (Driving / Inbound)"
-        REST[API REST / Controllers]
-        AI[Agente de Inteligencia Artificial]
-        CLI[Consola / CLI Client]
+    subgraph "Driving / Inbound Adapters (Primary)"
+        REST[REST API / Web Controllers]
+        AI[Autonomous AI Agent Client]
+        CLI[Terminal / CLI Client]
     end
 
-    subgraph "Núcleo de Dominio (Hexágono)"
-        subgraph "Puertos de Entrada (Inbound Ports)"
+    subgraph "Domain Core (Hexagon)"
+        subgraph "Inbound Ports (Use Cases)"
             TransferPort[TransferUseCase]
             AccountPort[AccountQueryUseCase]
         end
 
-        subgraph "Dominio & DDD Táctico"
+        subgraph "Domain & Tactical DDD"
             Account[Account Aggregate]
             Transaction[Transaction Entity]
             VO[Money / AccountNumber VOs]
-            Rules[Domain Events & Services]
+            Rules[Domain Events & Business Rules]
         end
 
-        subgraph "Puertos de Salida (Outbound Ports)"
+        subgraph "Outbound Ports (SPI)"
             RepoPort[AccountRepositoryPort]
             EventPort[EventPublisherPort]
         end
     end
 
-    subgraph "Adaptadores Secundarios (Driven / Outbound)"
-        DB[(Base de Datos / JPA / H2)]
+    subgraph "Driven / Outbound Adapters (Secondary)"
+        DB[(Persistence / JPA / H2 / Postgres)]
         Auth[Keycloak / Identity Provider]
-        Msg[Broker de Eventos]
+        Msg[Message Broker / Events]
     end
 
     REST --> TransferPort
@@ -68,101 +68,102 @@ graph TD
 
 ---
 
-## 🚀 Pilares de Aprendizaje y Arquitectura
+## 🚀 Architectural Pillars & Core Learnings
 
-### 1. Principios SOLID y Patrones de Diseño GoF
-- **S.O.L.I.D.** aplicados con problemas prácticos de acoplamiento.
-- Patrones de comportamiento y creación: **Strategy** (cálculo dinámico de comisiones por tipo de cuenta), **Factory**, **Observer**, entre otros.
+### 1. SOLID Principles & GoF Design Patterns
+- **S.O.L.I.D. principles** applied to real coupling and scalability challenges.
+- Behavioral and Creational patterns: **Strategy Pattern** (dynamic fee computation by account type using polymorphic Spring collections), **Factory**, **Observer**, and more.
 
-### 2. Domain-Driven Design (DDD Táctico)
-- Modelado de un dominio bancario expresivo y libre de dependencias de infraestructura.
-- Implementación de **Entities**, **Value Objects** inmutables, **Aggregates** y **Domain Events**.
+### 2. Tactical Domain-Driven Design (DDD)
+- Expressive domain modeling decoupled from persistence and framework mechanics.
+- Implementation of rich **Entities**, immutable **Value Objects**, **Aggregates**, and **Domain Events**.
 
-### 3. Arquitectura Hexagonal (Ports & Adapters)
-- Separación estricta entre la lógica de negocio y los detalles técnicos (bases de datos, frameworks, protocolos de red).
-- Migración paso a paso desde una arquitectura en capas tradicional hacia puertos y adaptadores.
+### 3. Hexagonal Architecture (Ports & Adapters)
+- Strict inversion of dependencies: business rules never depend on infrastructure or third-party libraries.
+- Step-by-step refactoring journey from a traditional layered MVC architecture to Hexagonal Ports & Adapters.
 
-### 4. Seguridad Empresarial con Keycloak & OAuth2
-- Autenticación y autorización basada en estándares del sector (**OAuth2**, **OpenID Connect** y tokens **JWT**).
-- Servidor de identidad desacoplado gestionado con contenedores.
+### 4. Enterprise-Grade Security with Keycloak & OAuth2
+- Industry-standard identity and access management using **OAuth2**, **OpenID Connect (OIDC)**, and **JWT** (JSON Web Tokens).
+- Decoupled authentication server orchestrated via containers.
 
-### 5. CQRS Liviano & Testing Arquitectónico
-- Separación de responsabilidades entre flujos de comando (escritura) y consulta (lectura).
-- **ArchUnit**: Tests automatizados en el pipeline de CI/CD que validan y garantizan que las reglas de arquitectura y las fronteras de paquetes no se rompan con el tiempo.
+### 5. Lightweight CQRS & Architectural Fitness Functions (ArchUnit)
+- Clear segregation of write models (commands) and read models (queries).
+- **ArchUnit integration**: Automated architectural unit tests ensuring package boundaries, layer separation, and dependency constraints are continuously verified in CI/CD pipelines.
 
-### 6. Agente de IA como Cliente de la Arquitectura
-- Conexión de un **agente inteligente** como cliente de la aplicación (mediante *Tool Use* y *OpenCode*).
-- **Validación del desacoplamiento**: demuestra que cualquier consumidor (REST, CLI o un agente de IA autónomo) puede interactuar con el sistema a través de los mismos casos de uso sin violar las reglas de dominio.
+### 6. AI Agent as a First-Class System Client
+- Integration of an **autonomous AI agent** consuming the banking system via *Tool Use* / *Function Calling* and *OpenCode*.
+- **The Ultimate Architecture Validation**: Demonstrating that whether the consumer is a REST client, a CLI, or an autonomous AI agent, it can operate against the core domain use cases without breaking invariants.
 
 ---
 
-## 🛠️ Stack Tecnológico
+## 🛠️ Technology Stack
 
-| Componente | Tecnología |
+| Component | Technology |
 | :--- | :--- |
-| **Lenguaje** | Java 21 LTS |
+| **Language** | Java 21 LTS |
 | **Framework** | Spring Boot 3.x / 4.x |
-| **Persistencia** | Spring Data JPA / Hibernate |
-| **Base de Datos** | H2 (desarrollo/test) & PostgreSQL |
-| **Seguridad** | Spring Security & Keycloak (OAuth2 / JWT) |
-| **Testing** | JUnit 5, Mockito, AssertJ, ArchUnit |
-| **Contenedores** | Docker & Docker Compose |
-| **Herramienta de Construcción** | Maven Wrapper (`./mvnw`) |
+| **Persistence** | Spring Data JPA / Hibernate |
+| **Database** | In-Memory H2 (Dev/Testing) & PostgreSQL (Production) |
+| **Security** | Spring Security & Keycloak (OAuth2 / JWT) |
+| **Architecture Testing** | ArchUnit |
+| **Unit & Integration Testing** | JUnit 5, Mockito, AssertJ |
+| **Containerization** | Docker & Docker Compose |
+| **Build Tool** | Maven Wrapper (`./mvnw`) |
 
 ---
 
-## 📦 Estructura del Proyecto (Evolutiva)
+## 📦 Evolutionary Project Structure
 
 ```text
 src/main/java/com/atlas/bank/atlas_bank/
-├── domain/                  # Núcleo de negocio puro (independiente de Spring/JPA)
-│   ├── model/               # Entidades, Value Objects, Agregados
-│   └── port/                # Interfaces de entrada (Use Cases) y salida (SPI)
-├── application/             # Servicios de aplicación y orquestación
-│   └── service/             # Implementaciones de casos de uso y cálculo de comisiones
-├── infrastructure/          # Detalles técnicos y adaptadores
+├── domain/                  # Pure business core (Zero dependencies on Spring / JPA)
+│   ├── model/               # Aggregates, Entities, Value Objects
+│   └── port/                # Inbound (Use Cases) and Outbound (SPI) Ports
+├── application/             # Application orchestration & business workflows
+│   └── service/             # Use case implementations & domain policy coordination
+├── infrastructure/          # Technical infrastructure & technical adapters
 │   ├── adapter/
-│   │   ├── in/              # Adaptadores de entrada (REST Controllers)
-│   │   └── out/             # Adaptadores de salida (JPA Repositories, DB Entities)
-│   └── config/              # Seguridad, beans y configuración del framework
+│   │   ├── in/              # Inbound adapters (REST Controllers, CLI, AI tools)
+│   │   └── out/             # Outbound adapters (JPA Repositories, Database Entities)
+│   └── config/              # Spring configuration beans, Security, Framework wiring
 ```
 
 ---
 
-## ⚡ Comenzar / Ejecución Local
+## ⚡ Getting Started / Local Setup
 
-### Prerrequisitos
-* **Java 21** o superior instalado.
-* **Docker Desktop** (opcional para Keycloak y servicios auxiliares).
+### Prerequisites
+* **Java 21 LTS** or higher installed.
+* **Docker Desktop** (recommended for Keycloak and database containers).
 
-### Compilar y Ejecutar
-1. Clonar el repositorio:
+### Build & Run
+1. Clone this repository:
    ```bash
-   git clone https://github.com/TU_USUARIO/springboot-hexagonal-demo.git
+   git clone https://github.com/YOUR_USERNAME/springboot-hexagonal-demo.git
    cd springboot-hexagonal-demo
    ```
 
-2. Compilar con el wrapper de Maven:
+2. Compile with Maven Wrapper:
    ```bash
    ./mvnw clean compile
    ```
 
-3. Ejecutar la aplicación:
+3. Launch the application:
    ```bash
    ./mvnw spring-boot:run
    ```
 
-4. Acceso a la consola de base de datos en memoria (H2):
+4. Access the embedded in-memory database console (H2):
    * URL: `http://localhost:8080/h2-console`
    * **JDBC URL:** `jdbc:h2:mem:atlasbank`
    * **User Name:** `sa`
-   * **Password:** *(en blanco)*
+   * **Password:** *(leave blank)*
 
 ---
 
-## 🧪 Ejecutar Tests
+## 🧪 Running Tests
 
-Para correr toda la suite de pruebas unitarias y de arquitectura (ArchUnit):
+To run the complete test suite, including architectural verification tests with ArchUnit:
 
 ```bash
 ./mvnw test
@@ -170,6 +171,6 @@ Para correr toda la suite de pruebas unitarias y de arquitectura (ArchUnit):
 
 ---
 
-## 🎯 Objetivo y Filosofía
+## 🎯 Engineering Philosophy
 
-> *"Al terminar este proyecto no solo tendrás una API bancaria funcional y un proyecto sólido para tu portfolio; tendrás **criterio técnico** para saber cuándo aplicar una arquitectura, cuándo no, y cómo defender tus decisiones como arquitecto de software."*
+> *"By completing this project, you don't just build another banking API for your portfolio; you develop the **technical judgment** needed to decide when to apply an architecture, when not to, and how to defend design decisions with solid software engineering foundations."*
