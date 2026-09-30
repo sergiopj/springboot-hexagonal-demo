@@ -1,4 +1,4 @@
-package com.atlas.bank.atlas_bank.model;
+package com.atlas.bank.atlas_bank.account.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

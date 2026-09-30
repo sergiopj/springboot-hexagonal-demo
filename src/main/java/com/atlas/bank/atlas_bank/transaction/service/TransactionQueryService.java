@@ -1,20 +1,21 @@
-package com.atlas.bank.atlas_bank.service;
+package com.atlas.bank.atlas_bank.transaction.service;
 
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.atlas.bank.atlas_bank.model.Transaction;
-import com.atlas.bank.atlas_bank.repository.TransactionRepository;
+import com.atlas.bank.atlas_bank.transaction.model.Transaction;
+import com.atlas.bank.atlas_bank.transaction.repository.TransactionRepository;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class TransactionQueryService {
+public class TransactionQueryService implements ITransactionQueryService {
 
     private final TransactionRepository transactionRepository;
 
+    @Override
     public List<Transaction> getAccountById(Long accountId) {
         return transactionRepository
                 .findBySourceAccountIdOrTargetAccountId(accountId, accountId);

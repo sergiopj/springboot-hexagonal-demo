@@ -1,5 +1,5 @@
 // Paquete donde vive la clase. Es como la carpeta / dirección postal del proyecto.
-package com.atlas.bank.atlas_bank.service.fee;
+package com.atlas.bank.atlas_bank.transaction.fee;
 
 // Importamos BigDecimal porque para dinero nunca se usa double. 
 // double tiene errores de decimales, BigDecimal es exacto.
