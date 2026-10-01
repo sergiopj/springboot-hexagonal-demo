@@ -10,16 +10,23 @@ import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+// Solo incluye en equals() y hashCode() los campos marcados explícitamente con @EqualsAndHashCode.Include
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Account {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
 
+    @Id // Clave primaria (Primary Key) de la tabla en base de datos
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // ID autoincremental generado automáticamente por la BD
+    @EqualsAndHashCode.Include // Dos cuentas se consideran la misma si comparten el mismo ID
     private Long id;
     private String accountNumber;
     private String ownerName;

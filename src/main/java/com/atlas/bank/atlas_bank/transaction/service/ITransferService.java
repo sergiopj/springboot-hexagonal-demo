@@ -1,11 +1,12 @@
 package com.atlas.bank.atlas_bank.transaction.service;
 
-import java.math.BigDecimal;
+import java.util.List;
 
-import com.atlas.bank.atlas_bank.transaction.model.Transaction;
+import com.atlas.bank.atlas_bank.transaction.dto.TransactionResponse;
+import com.atlas.bank.atlas_bank.transaction.dto.TransferRequest;
 
 public interface ITransferService {
 
-    Transaction execute(Long fromId, Long toId, BigDecimal amount);
+    TransactionResponse execute(TransferRequest request);
 
 }

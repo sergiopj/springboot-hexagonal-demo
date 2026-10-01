@@ -3,7 +3,8 @@ package com.atlas.bank.atlas_bank.account.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.atlas.bank.atlas_bank.account.model.Account;
+import com.atlas.bank.atlas_bank.account.dto.AccountResponse;
+import com.atlas.bank.atlas_bank.account.dto.CreateAccountRequest;
 import com.atlas.bank.atlas_bank.account.service.IAccountService;
 
 import lombok.RequiredArgsConstructor;
@@ -25,17 +26,18 @@ public class AccountController {
     private final IAccountService iAccountService;
 
     @PostMapping
-    public ResponseEntity<Account> create(@RequestBody Account account) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(iAccountService.create(account));
+    public ResponseEntity<AccountResponse> create(@RequestBody CreateAccountRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(iAccountService.create(request));
     }
 
     @GetMapping
-    public ResponseEntity<List<Account>> findAll() {
+    public ResponseEntity<List<AccountResponse>> findAll() {
         return ResponseEntity.ok(iAccountService.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Account> findById(@PathVariable Long id) {
+    public ResponseEntity<AccountResponse> findById(@PathVariable Long id) {
         return ResponseEntity.ok(iAccountService.findById(id));
     }
 

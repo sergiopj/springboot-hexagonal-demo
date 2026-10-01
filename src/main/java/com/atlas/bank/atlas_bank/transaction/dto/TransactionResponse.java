@@ -1,43 +1,24 @@
-package com.atlas.bank.atlas_bank.transaction.model;
-
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+package com.atlas.bank.atlas_bank.transaction.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@Entity
+import lombok.Builder;
+import lombok.Data;
+
 // Anotación de Lombok que genera automáticamente en segundo plano:
 // getters, setters, toString, equals, hashCode y el constructor para campos requeridos.
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class Transaction {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+// Permite construir objetos con el patrón Builder: TransactionResponse.builder().campo(valor).build()
+@Builder
+public class TransactionResponse {
     private Long id;
-
     private String type; // DEPOSIT, WITHDRAWAL, TRANSFER
-
     private Long sourceAccountId;
-
     private Long targetAccountId;
-
     private BigDecimal amount;
-
     private BigDecimal fee;
-
     private String status; // PENDING, EXECUTED, REJECTED
-
     private LocalDateTime createdAt;
 
-    @PrePersist
-    public void prePersist() {
-        this.createdAt = LocalDateTime.now();
-        if (this.status == null)
-            this.status = "EXECUTED";
-    }
 }

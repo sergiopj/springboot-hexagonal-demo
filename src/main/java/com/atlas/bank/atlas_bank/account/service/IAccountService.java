@@ -2,14 +2,15 @@ package com.atlas.bank.atlas_bank.account.service;
 
 import java.util.List;
 
-import com.atlas.bank.atlas_bank.account.model.Account;
+import com.atlas.bank.atlas_bank.account.dto.AccountResponse;
+import com.atlas.bank.atlas_bank.account.dto.CreateAccountRequest;
 
 public interface IAccountService {
 
-    public Account create(Account account);
+    AccountResponse create(CreateAccountRequest request);
 
-    public List<Account> findAll();
+    List<AccountResponse> findAll();
 
-    public Account findById(Long id);
+    AccountResponse findById(Long id);
 
 }

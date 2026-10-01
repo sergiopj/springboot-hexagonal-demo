@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 
 import com.atlas.bank.atlas_bank.account.model.Account;
 import com.atlas.bank.atlas_bank.account.repository.AccountRepository;
+import com.atlas.bank.atlas_bank.transaction.dto.TransactionResponse;
+import com.atlas.bank.atlas_bank.transaction.dto.TransferRequest;
 import com.atlas.bank.atlas_bank.transaction.fee.FeeCalculator;
 import com.atlas.bank.atlas_bank.transaction.model.Transaction;
 import com.atlas.bank.atlas_bank.transaction.repository.TransactionRepository;
@@ -24,10 +26,10 @@ public class TransferService implements ITransferService {
 
     @Override
     @Transactional
-    public Transaction execute(Long fromId, Long toId, BigDecimal amount) {
-        Account from = accountRepository.findById(fromId)
+    public TransactionResponse execute(TransferRequest request) {
+        Account from = accountRepository.findById(request.getSourceAccountId())
                 .orElseThrow(() -> new RuntimeException("Cuenta origen no encontrada"));
-        Account to = accountRepository.findById(toId)
+        Account to = accountRepository.findById(request.getTargetAccountId())
                 .orElseThrow(() -> new RuntimeException("Cuenta destino no encontrada"));
 
         if (!"ACTIVE".equals(from.getStatus())) {
@@ -37,7 +39,7 @@ public class TransferService implements ITransferService {
             throw new RuntimeException("La cuenta destino no está activa");
         }
 
-        if (from.getBalance().compareTo(amount) < 0) {
+        if (from.getBalance().compareTo(request.getAmount()) < 0) {
             throw new RuntimeException("Fondos insuficientes");
         }
 
@@ -45,22 +47,37 @@ public class TransferService implements ITransferService {
                 .filter(fc -> fc.supports(from.getType()))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("No hay calculador para el tipo " + from.getType()))
-                .calculate(amount);
+                .calculate(request.getAmount());
 
-        from.setBalance(from.getBalance().subtract(amount).subtract(fee));
-        to.setBalance(to.getBalance().add(amount));
+        from.setBalance(from.getBalance().subtract(request.getAmount()).subtract(fee));
+        to.setBalance(to.getBalance().add(request.getAmount()));
         accountRepository.save(from);
         accountRepository.save(to);
 
         Transaction transaction = new Transaction();
         transaction.setType("TRANSFER");
-        transaction.setSourceAccountId(fromId);
-        transaction.setTargetAccountId(toId);
-        transaction.setAmount(amount);
+        transaction.setSourceAccountId(request.getSourceAccountId());
+        transaction.setTargetAccountId(request.getTargetAccountId());
+        transaction.setAmount(request.getAmount());
         transaction.setFee(fee);
         transaction.setStatus("EXECUTED");
 
-        return transactionRepository.save(transaction);
+        Transaction saved = transactionRepository.save(transaction);
+
+        return toResponse(saved);
+    }
+
+    private TransactionResponse toResponse(Transaction t) {
+        return TransactionResponse.builder()
+                .id(t.getId())
+                .type(t.getType())
+                .sourceAccountId(t.getSourceAccountId())
+                .targetAccountId(t.getTargetAccountId())
+                .amount(t.getAmount())
+                .fee(t.getFee())
+                .status(t.getStatus())
+                .createdAt(t.getCreatedAt())
+                .build();
     }
 
 }
