@@ -3,15 +3,19 @@ package com.atlas.bank.atlas_bank.transaction.model;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
 // Anotación de Lombok que genera automáticamente en segundo plano:
-// getters, setters, toString, equals, hashCode y el constructor para campos requeridos.
-@Data
+// getters, setters, toString, equals, hashCode y el constructor para campos
+// requeridos.
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Transaction {
