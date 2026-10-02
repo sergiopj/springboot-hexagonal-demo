@@ -1,7 +1,6 @@
 package com.atlas.bank.atlas_bank.transaction.dto;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 import lombok.Data;
 

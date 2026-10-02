@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import com.atlas.bank.atlas_bank.account.model.Account;
 import com.atlas.bank.atlas_bank.account.repository.AccountRepository;
-import com.atlas.bank.atlas_bank.transaction.dto.TransactionResponse;
 import com.atlas.bank.atlas_bank.transaction.dto.TransferRequest;
 import com.atlas.bank.atlas_bank.transaction.fee.FeeCalculator;
 import com.atlas.bank.atlas_bank.transaction.model.Transaction;
@@ -26,7 +25,7 @@ public class TransferService implements ITransferService {
 
     @Override
     @Transactional
-    public TransactionResponse execute(TransferRequest request) {
+    public Transaction transfer(TransferRequest request) {
         Account from = accountRepository.findById(request.getSourceAccountId())
                 .orElseThrow(() -> new RuntimeException("Cuenta origen no encontrada"));
         Account to = accountRepository.findById(request.getTargetAccountId())
@@ -62,22 +61,7 @@ public class TransferService implements ITransferService {
         transaction.setFee(fee);
         transaction.setStatus("EXECUTED");
 
-        Transaction saved = transactionRepository.save(transaction);
-
-        return toResponse(saved);
-    }
-
-    private TransactionResponse toResponse(Transaction t) {
-        return TransactionResponse.builder()
-                .id(t.getId())
-                .type(t.getType())
-                .sourceAccountId(t.getSourceAccountId())
-                .targetAccountId(t.getTargetAccountId())
-                .amount(t.getAmount())
-                .fee(t.getFee())
-                .status(t.getStatus())
-                .createdAt(t.getCreatedAt())
-                .build();
+        return transactionRepository.save(transaction);
     }
 
 }

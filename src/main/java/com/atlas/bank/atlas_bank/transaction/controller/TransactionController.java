@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.atlas.bank.atlas_bank.transaction.dto.TransactionMapper;
 import com.atlas.bank.atlas_bank.transaction.dto.TransactionResponse;
 import com.atlas.bank.atlas_bank.transaction.dto.TransferRequest;
 import com.atlas.bank.atlas_bank.transaction.service.ITransactionQueryService;
@@ -25,16 +26,20 @@ public class TransactionController {
 
     private final ITransferService iTransferService;
     private final ITransactionQueryService iTransactionQueryService;
+    private final TransactionMapper transactionMapper;
 
     @PostMapping("/transfer")
     public ResponseEntity<TransactionResponse> transfer(@RequestBody TransferRequest request) {
+        var saved = iTransferService.transfer(request);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(iTransferService.execute(request));
+                .body(transactionMapper.toResponse(saved));
     }
 
     @GetMapping("/{id}/transactions")
     public ResponseEntity<List<TransactionResponse>> getTransactionList(@PathVariable Long id) {
-        return ResponseEntity.ok(iTransactionQueryService.getTransactionsByAccountId(id));
+        var transactions = iTransactionQueryService.getTransactionsByAccountId(id);
+        var response = transactions.stream().map(transactionMapper::toResponse).toList();
+        return ResponseEntity.ok(response);
     }
 
 }
